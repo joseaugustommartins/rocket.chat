@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6.0.9
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - mongo_data:/data/db
+    expose:
+      - "27017"
+
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    container_name: rocketchat
+    environment:
+      - MONGO_URL=mongodb://admin:password@mongo:27017/rocketchat
+      - ROOT_URL=http://localhost:3000
+      - PORT=3000
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+
+volumes:
+  mongo_data:
+    driver: local
